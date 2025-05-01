@@ -1,0 +1,70 @@
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #79de14, #228b22); /* Tonalidades verdes */
+  padding: 0 10px;
+}
+
+.description-box {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 1.8rem;
+  color: #2f4f4f;
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.register-btn,
+.login-btn {
+  padding: 12px 25px;
+  font-size: 1rem;
+  background-color: #228b22;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 45%;
+}
+
+.register-btn:hover,
+.login-btn:hover {
+  background-color: #68c011;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .register-btn,
+  .login-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}

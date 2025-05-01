@@ -1,0 +1,52 @@
+<div class="schedule-wrapper">
+  <div class="form-box">
+    <!-- Datos del complejo -->
+    <div class="complex-info">
+      <h2>{{ complex.name }}</h2>
+      <p>{{ complex.address }}, {{ complex.city }}, {{ complex.province }}</p>
+    </div>
+        <!-- Botón "Organizar semana" solo si está logueado -->
+        <div class="button-group" *ngIf="currentUser">
+          <button class="organize-btn" (click)="goBack()">Cerrar sesion</button>
+          <button class="organize-btn" (click)="goEditProfile()">Editar datos</button>
+          <button class="organize-btn" (click)="openScheduleDialog()">Organizar semana</button>
+          <button mat-raised-button color="primary" class="organize-btn" (click)="enableAllSlots()">
+            Habilitar todos los turnos
+          </button>
+        </div>
+
+    <!-- Selectores -->
+    <div class="selectors">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Deporte</mat-label>
+        <mat-select [(ngModel)]="selectedSport" (selectionChange)="filterCourts()">
+          <mat-option *ngFor="let sport of sports" [value]="sport">{{ sport }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Cancha</mat-label>
+        <mat-select [(ngModel)]="selectedCourt">
+          <mat-option *ngFor="let court of filteredCourts" [value]="court">{{ court.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Tabla de horarios -->
+    <div class="week-grid">
+      <div class="day-column" *ngFor="let day of week">
+        <h4>{{ day.name }}</h4>
+        <mat-chip-list>
+          <mat-chip
+            *ngFor="let slot of day.slots"
+            [ngClass]="{ 'available-chip': slot.available, 'unavailable-chip': !slot.available }"
+            (click)="currentUser ? toggleSlot(day.name, slot) : (slot.available && openBookingDialog(slot))"
+            selectable="false"
+          >
+            {{ slot.startTime }} - {{ slot.endTime }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
+  </div>
+</div>

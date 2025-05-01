@@ -1,0 +1,35 @@
+.cancel-btn {
+  padding: 12px 25px;
+  font-size: 1rem;
+  background-color: rgb(220, 35, 41);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #df6e6e;
+}
+
+.submit-btn {
+  padding: 12px 25px;
+  font-size: 1rem;
+  background-color: #228b22;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #7cfc00;
+}
+
+.organize-btn {
+  display: flex;
+  gap: 8px;
+}
+

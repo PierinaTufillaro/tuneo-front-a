@@ -1,0 +1,142 @@
+<!-- register.component.html -->
+<div class="register-container">
+  <div class="form-box">
+    <h1 class="form-title">
+      {{ mode === 'edit' ? 'Editar Complejo' : 'Registro de Complejo' }}
+    </h1>
+    <mat-horizontal-stepper [linear]="true" labelPosition="bottom" #stepper>
+      <!-- Paso 1: Datos personales -->
+      <mat-step [stepControl]="personalForm">
+        <form [formGroup]="personalForm">
+          <ng-template matStepLabel>Datos</ng-template>
+
+          <div class="input-group">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Nombre completo</mat-label>
+              <input matInput formControlName="name" required />
+            </mat-form-field>
+          </div>
+
+          <div class="input-group">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" required type="email" />
+            </mat-form-field>
+          </div>
+
+          <div class="input-group">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Contraseña</mat-label>
+              <input
+                matInput
+                formControlName="password"
+                required
+                type="password"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="input-group">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Teléfono</mat-label>
+              <input matInput formControlName="phone" required />
+            </mat-form-field>
+          </div>
+
+          <div class="button-group">
+            <button mat-raised-button (click)="goBack()">Anterior</button>
+            <button mat-raised-button color="primary" matStepperNext>
+              Siguiente
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Paso 2: Datos del complejo -->
+      <mat-step [stepControl]="complexForm">
+        <form [formGroup]="complexForm">
+          <ng-template matStepLabel>Complejo</ng-template>
+
+          <div
+            class="input-group"
+            *ngFor="
+              let field of [
+                'name',
+                'slug',
+                'address',
+                'city',
+                'province',
+                'phone',
+                'email'
+              ]
+            "
+          >
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ field | titlecase }}</mat-label>
+              <input
+                matInput
+                [formControlName]="field"
+                [type]="field === 'email' ? 'email' : 'text'"
+                required
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="button-group">
+            <button mat-raised-button matStepperPrevious>Anterior</button>
+            <button mat-raised-button color="primary" matStepperNext>
+              Siguiente
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Paso 3: Agregar canchas -->
+      <mat-step>
+        <ng-template matStepLabel>Canchas</ng-template>
+
+        <div
+          *ngFor="let court of courtsControls; let i = index"
+          [formGroup]="court"
+          class="court-form"
+        >
+          <h3 class="court-title">Cancha {{ i + 1 }}</h3>
+
+          <div
+            class="input-group"
+            *ngFor="let attr of ['name', 'sport', 'type', 'price']"
+          >
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ attr | titlecase }}</mat-label>
+              <input
+                matInput
+                [formControlName]="attr"
+                [type]="attr === 'price' ? 'number' : 'text'"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="remove-btn">
+            <button mat-icon-button color="warn" (click)="removeCourt(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+
+        <div class="button-group">
+          <button mat-stroked-button color="primary" (click)="addCourt()">
+            Agregar cancha
+          </button>
+        </div>
+
+        <div class="button-group">
+          <button mat-raised-button matStepperPrevious>Anterior</button>
+          <button class="submit-btn" (click)="submit()">
+            {{ mode === 'edit' ? 'Guardar cambios' : 'Finalizar registro' }}
+          </button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>
+</div>

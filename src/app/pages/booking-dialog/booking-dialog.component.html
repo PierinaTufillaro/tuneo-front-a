@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Confirmar Reserva</h2>
+<mat-dialog-content>
+  <p><strong>Complejo:</strong> {{ data.complex.name }}</p>
+  <p><strong>Cancha:</strong> {{ data.court.name }}</p>
+  <p><strong>Horario:</strong> {{ data.slot }}</p>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="organize-btn">
+  <button class="cancel-btn" (click)="dialogRef.close()">Cancelar</button>
+  <button class="submit-btn">
+    <a [href]="whatsappLink" target="_blank" style="color: white; text-decoration: none; display: block; width: 100%;">
+      Reservar
+    </a>
+  </button></mat-dialog-actions>

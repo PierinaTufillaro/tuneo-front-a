@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Organizar Semana</h2>
+<mat-dialog-content>
+  <form>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Duración del turno</mat-label>
+      <mat-select [(ngModel)]="schedule.duration" name="duration">
+        <mat-option *ngFor="let d of durations" [value]="d">{{ d }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngFor="let day of days" class="day-form">
+      <h4>{{ day }}</h4>
+      <mat-form-field appearance="fill">
+        <mat-label>Desde</mat-label>
+        <input matInput [(ngModel)]="schedule[day].from" name="{{day}}-from" type="time" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Hasta</mat-label>
+        <input matInput [(ngModel)]="schedule[day].to" name="{{day}}-to" type="time" />
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="organize-btn">
+  <button class="cancel-btn" (click)="cancel()">Cancelar</button>
+  <button class="submit-btn" (click)="save()">Guardar</button>
+</mat-dialog-actions>

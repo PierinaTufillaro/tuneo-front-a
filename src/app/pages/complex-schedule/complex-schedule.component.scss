@@ -1,0 +1,115 @@
+.schedule-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #7cfc00, #228b22);
+  padding: 20px;
+}
+
+.form-box {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.complex-info {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2f4f4f;
+}
+
+.selectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.full-width {
+  flex: 1;
+  min-width: 150px;
+}
+
+.button-group {
+  justify-content: center;
+  gap: 3px;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.organize-btn {
+  padding: 12px 20px;
+  background-color: #228b22;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.organize-btn:hover {
+  background-color: #7cfc00;
+}
+
+.week-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.day-column {
+  flex: 1 1 130px;
+  min-width: 130px;
+}
+
+mat-chip {
+  margin: 5px 0;
+  width: 100%;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.available-chip {
+  background-color: #228b22 !important;
+  color: white;
+}
+
+.unavailable-chip {
+  background-color: #ccc !important;
+  color: #333;
+}
+
+.editing-btns {
+  display: flex;
+  gap: 8px;
+}
+
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .form-box {
+    padding: 20px 15px;
+  }
+
+  .week-grid {
+    flex-direction: column;
+  }
+
+  .selectors {
+    flex-direction: column;
+  }
+
+  .day-column {
+    min-width: unset;
+  }
+
+  mat-form-field {
+    font-size: 0.9rem;
+  }
+}
