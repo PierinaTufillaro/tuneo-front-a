@@ -2,8 +2,8 @@
   <div class="form-box">
     <!-- Datos del complejo -->
     <div class="complex-info">
-      <h2>{{ complex.name }}</h2>
-      <p>{{ complex.address }}, {{ complex.city }}, {{ complex.province }}</p>
+      <h2>{{ complex?.name }}</h2>
+      <p>{{ complex?.address }}, {{ complex?.city }}, {{ complex?.province }}</p>
     </div>
         <!-- Botón "Organizar semana" solo si está logueado -->
         <div class="button-group" *ngIf="currentUser">
@@ -39,8 +39,8 @@
         <mat-chip-list>
           <mat-chip
             *ngFor="let slot of day.slots"
-            [ngClass]="{ 'available-chip': slot.available, 'unavailable-chip': !slot.available }"
-            (click)="currentUser ? toggleSlot(day.name, slot) : (slot.available && openBookingDialog(slot))"
+            [ngClass]="{ 'available-chip': slot.status === 'available', 'unavailable-chip': slot.status !== 'available' }"
+            (click)="currentUser ? toggleSlot(day.name, slot) : (slot.status === 'available' && openBookingDialog(slot))"
             selectable="false"
           >
             {{ slot.startTime }} - {{ slot.endTime }}

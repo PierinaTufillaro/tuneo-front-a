@@ -1,4 +1,3 @@
-// register.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -9,12 +8,15 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';  // Importa CommonModule
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.services';
+import { AuthService } from '../../services/auth.service';
 import { Location } from '@angular/common';
-
-
+import { UserService } from '../../services/user.service';
+import { CourtService } from '../../services/court.service';
+import { ComplexService } from '../../services/complex.service';
+import { from, mergeMap, switchMap } from 'rxjs';
+import { Court } from '../../interfaces/court.model';
 
 @Component({
   selector: 'app-register',
@@ -29,8 +31,8 @@ import { Location } from '@angular/common';
     MatDividerModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule
-  ]
+    CommonModule,
+  ],
 })
 export class RegisterComponent {
   personalForm: FormGroup;
@@ -39,12 +41,20 @@ export class RegisterComponent {
   currentUser: any = null;
   mode: 'register' | 'edit' = 'register';
 
-  constructor(private location: Location, private userService: UserService, private fb: FormBuilder, private router: Router) {
+  constructor(
+    private courtService: CourtService,
+    private complexService: ComplexService,
+    private userService: UserService,
+    private location: Location,
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private router: Router
+  ) {
     this.personalForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      phone: ['', Validators.required]
+      phone: ['', Validators.required],
     });
 
     this.complexForm = this.fb.group({
@@ -54,41 +64,40 @@ export class RegisterComponent {
       city: ['', Validators.required],
       province: ['', Validators.required],
       phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
     });
 
     this.courts = this.fb.array([this.createCourt()]);
   }
 
   ngOnInit() {
-    this.currentUser = this.userService.getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
       this.mode = 'edit';
-      this.populateForms(); // Cargar los forms con currentUser
+      this.populateForms();
     }
   }
 
   populateForms() {
-    // Personal
     this.personalForm.patchValue({
       name: this.currentUser.name,
       email: this.currentUser.email,
-      password: '',  // Opcional: solo si quieres que cambie
-      phone: this.currentUser.phone
+      password: this.currentUser.password,
+      phone: this.currentUser.phone,
     });
 
-    // Complejo
     this.complexForm.patchValue(this.currentUser.complex);
 
-    // Canchas
     this.courts.clear();
-    this.currentUser.courts.forEach((court: any) => {
-      this.courts.push(this.fb.group({
-        name: [court.name],
-        sport: [court.sport],
-        type: [court.type],
-        price: [court.price]
-      }));
+    this.currentUser.courts?.forEach((court: any) => {
+      this.courts.push(
+        this.fb.group({
+          name: [court.name],
+          sport: [court.sport],
+          type: [court.type],
+          hourly_price: [court.hourly_price],
+        })
+      );
     });
   }
 
@@ -97,7 +106,7 @@ export class RegisterComponent {
       name: [''],
       sport: [''],
       type: [''],
-      price: ['']
+      hourly_price: [''],
     });
   }
 
@@ -115,16 +124,51 @@ export class RegisterComponent {
 
   submit() {
     const data = {
-      personal: this.personalForm.value,
+      user: this.personalForm.value,
       complex: this.complexForm.value,
-      courts: this.courts.value
+      courts: this.courts.value,
     };
-    console.log('Formulario enviado:', data);
-    // Podés enviar esto al backend con un servicio HTTP
+    if (this.mode == 'register') {
+      this.userService
+        .createUser(data.user)
+        .pipe(
+          switchMap((userRes) => {
+            console.log('User created:', userRes);
+            data.complex.user_id = userRes.id;
+            return this.complexService.createComplex(data.complex);
+          }),
+          switchMap((complexRes) => {
+            const fieldRequests = data.courts.map((court: Court) => ({
+              ...court,
+              complex_id: complexRes.id,
+            }));
+
+            return from(fieldRequests as Court[]).pipe(
+              mergeMap((court: Court) => this.courtService.createCourt(court))
+            );
+          })
+        )
+        .subscribe({
+          next: (finalResponse) => {
+            console.log('Register completed:', finalResponse);
+          },
+          error: (err) => {
+            console.error('Error in register:', err);
+          },
+        });
+    } else {
+      // TODO
+      this.userService
+        .updateUser(this.currentUser.id, data.user)
+        .subscribe((response) => {
+          console.log('User Updated:', response);
+          this.authService.setCurrentUser(response);
+        });
+    }
+    console.log('Form sent:', data);
   }
 
   goBack() {
     this.location.back();
   }
-
 }

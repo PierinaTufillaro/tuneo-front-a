@@ -1,52 +1,47 @@
+import { AuthService } from '../../services/auth.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../../services/user.services';
-
+import { MatIconModule } from '@angular/material/icon';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule], // Import FormsModule aquí
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  imports: [FormsModule, MatIconModule],
 })
 export class LoginComponent {
   email: string = '';
   password: string = '';
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private location: Location
+  ) {}
 
   onLogin() {
-    // Aquí puedes agregar la lógica para iniciar sesiónx
-    console.log('Iniciando sesión', this.email, this.password);
-    // Luego rediriges a la página principal o dashboard
-    const user = {
-      name: 'Juan Pérez',
-      email: 'juan@example.com',
-      phone: '123456789',
-      complex: {
-        name: 'Complejo Norte',
-        slug: 'complejo-norte',
-        address: 'Calle Falsa 123',
-        city: 'Buenos Aires',
-        province: 'Buenos Aires',
-        phone: '123456789',
-        email: 'complejo@example.com'
+    console.log('Starting sesion', this.email, this.password);
+
+    this.authService.login(this.email, this.password).subscribe({
+      next: (response: any) => {
+        console.log('Login successful:', response);
+        localStorage.setItem('token', response.access_token);
+        this.authService.setCurrentUser(response.user);
+        this.router.navigate(['/complex-schedule']);
       },
-      courts: [
-        {
-          name: 'Cancha 1',
-          sport: 'Fútbol',
-          type: 'Sintético',
-          price: 2000
-        }
-      ]
-    };
-    this.userService.setCurrentUser(user);
-    this.router.navigate(['/complex-schedule']);
+      error: (err) => {
+        console.error('Error in login:', err);
+      },
+    });
   }
 
   goRegister() {
     this.router.navigate(['/register']);
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

@@ -1,6 +1,7 @@
 <!-- register.component.html -->
 <div class="register-container">
   <div class="form-box">
+    <mat-icon (click)="goBack()">arrow_back_ios</mat-icon>
     <h1 class="form-title">
       {{ mode === 'edit' ? 'Editar Complejo' : 'Registro de Complejo' }}
     </h1>
@@ -104,14 +105,14 @@
 
           <div
             class="input-group"
-            *ngFor="let attr of ['name', 'sport', 'type', 'price']"
+            *ngFor="let attr of ['name', 'sport', 'type', 'hourly_price']"
           >
             <mat-form-field appearance="fill" class="full-width">
               <mat-label>{{ attr | titlecase }}</mat-label>
               <input
                 matInput
                 [formControlName]="attr"
-                [type]="attr === 'price' ? 'number' : 'text'"
+                [type]="attr === 'hourly_price' ? 'number' : 'text'"
               />
             </mat-form-field>
           </div>
